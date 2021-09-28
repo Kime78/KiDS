@@ -4,7 +4,8 @@
 #include "imgui/imgui_impl_opengl3.h"
 #include "imgui/imgui_impl_opengl3_loader.h"
 #include <GLFW/glfw3.h>
-
+#include "memory.h"
+#include "arm9.hpp"
 int main()
 {
     if (!glfwInit()) //if glfw doesn't load, exit
@@ -26,7 +27,7 @@ int main()
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;\
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
 
     ImGui::StyleColorsDark();
 
@@ -35,6 +36,9 @@ int main()
     
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
+    int pos = 0;
+    ARM9 cpu;
+    cpu.step();
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
