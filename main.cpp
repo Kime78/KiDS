@@ -38,9 +38,9 @@ int main()
 
     int pos = 0;
     ARM9 cpu;
-    cpu.step();
     while (!glfwWindowShouldClose(window))
     {
+        cpu.step();
         glfwPollEvents();
 
         ImGui_ImplOpenGL3_NewFrame();

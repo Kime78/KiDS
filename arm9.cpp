@@ -13,7 +13,7 @@ Header get_header(Memory_ARM9 &mem)
     Header ret;
     char title[12];
 
-    for(int i = 0; i < 12; i++)
+    for (int i = 0; i < 12; i++)
     {
         title[i] = mem.rom[i];
     }
@@ -34,7 +34,7 @@ ARM9::ARM9()
     mem.read_rom("roms/armwrestler.nds");
     head = get_header(mem);
     pc = head.arm9_entry_address;
-    for(int i = 0; i < head.arm9_size; i++)
+    for (int i = 0; i < head.arm9_size; i++)
     {
         mem.write8(head.arm9_ram_address + i, mem.rom[head.arm9_rom_offset + i]);
     }
@@ -44,22 +44,28 @@ ARM9::ARM9()
 void ARM9::fill_lut()
 {
     //fill conditional opcodes
-    for(int i = 0; i < 0x1000; i++)
+    for (int i = 0; i < 0x1000; i++)
     {
         conditional_instr[i] = undefined_instruction;
-
-        if((i >> 4) == 0b111010)
+        if ((i >> 9) == 0b000) //data transfer
+        {
+            if ((i & 0b1111) == 0b1011)
+                conditional_instr[i] = strh;
+        }
+        if ((i >> 4) == 0b101000)
+            conditional_instr[i] = add_imm;
+        if ((i >> 4) == 0b111010)
             conditional_instr[i] = mov_imm;
     }
 
     //fill unconditional opcodes
-    for(int i = 0; i < 0x1000; i++)
+    for (int i = 0; i < 0x1000; i++)
     {
         unconditional_instr[i] = undefined_instruction;
     }
 
     //fill thumb opcodes
-    for(int i = 0; i < 0x400; i++)
+    for (int i = 0; i < 0x400; i++)
     {
         thumb_instr[i] = undefined_instruction_thumb;
     }
@@ -78,19 +84,20 @@ void ARM9::step()
     case 0xE:
         can_execute = 1;
         break;
-    
+
     default:
         std::cout << "[ERROR] COND " << std::hex << (int)cond << "NOT IMPLEMENTED!";
         exit(0);
     }
 
-    if(can_execute)
+    if (can_execute)
     {
-        conditional_instr[opcode](instr);
+        conditional_instr[opcode](this, instr);
     }
 
-    if(cond == 0b1111)
+    if (cond == 0b1111)
     {
-        unconditional_instr[opcode](instr);
+        unconditional_instr[opcode](this, instr);
     }
+    pc += 4;
 }
