@@ -2,11 +2,7 @@
 
 #include "arm9.hpp"
 #include "arm9_instructions.hpp"
-
-uint32_t get_arm_opcode(uint32_t opcode)
-{
-    return (((opcode >> 20) & 0xFF) << 4) | ((opcode >> 4) & 0xF);
-}
+#include "math.hpp"
 
 Header get_header(Memory_ARM9 &mem)
 {
@@ -47,11 +43,101 @@ void ARM9::fill_lut()
     for (int i = 0; i < 0x1000; i++)
     {
         conditional_instr[i] = undefined_instruction;
+        if ((i >> 4) == 0b0001'0010)
+            conditional_instr[i] = msr_cpsr_reg;
+        if ((i >> 4) == 0b0001'0110)
+            conditional_instr[i] = msr_spsr_reg;
+        if ((i >> 4) == 0b0011'0010)
+            conditional_instr[i] = msr_cpsr_imm;
+        if ((i >> 4) == 0b0011'0110)
+            conditional_instr[i] = msr_spsr_imm;
+
+        if ((i >> 10) == 0b01)
+        {
+            if(get_bit(i , 4)) // load bit
+            {
+                if(get_bit(i, 6)) // byte/word bit
+                {
+                    if(get_bit(i, 9))
+                    {
+                        conditional_instr[i] = ldrb_imm;
+                    }
+                    else
+                    {
+                        conditional_instr[i] = ldrb_reg;
+                    }
+                }
+                else
+                {
+                    if(get_bit(i, 9))
+                    {
+                        conditional_instr[i] = ldr_imm;
+                    }
+                    else
+                    {
+                        conditional_instr[i] = ldr_reg;
+                    }
+                }
+            }
+            else
+            {
+                if(get_bit(i, 6)) // byte/word bit
+                {
+                    if(get_bit(i, 9))
+                    {
+                        conditional_instr[i] = strb_imm;
+                    }
+                    else
+                    {
+                        conditional_instr[i] = strb_reg;
+                    }
+                }
+                else
+                {
+                    if(get_bit(i, 9))
+                    {
+                        conditional_instr[i] = str_imm;
+                    }
+                    else
+                    {   
+                        conditional_instr[i] = str_reg;
+                    }
+                }
+            }
+        }
+
         if ((i >> 9) == 0b000) //data transfer
         {
             if ((i & 0b1111) == 0b1011)
-                conditional_instr[i] = strh;
+            {
+                if (get_bit(i, 4))
+                {
+                    //ldrh
+                    if (get_bit(i, 6))
+                    {
+                        //ldrh imm
+                    }
+                    else
+                    {
+                        //ldrh reg
+                    }
+                }
+                else
+                {
+                    //strh
+                    if (get_bit(i, 6))
+                    {
+                        //strh imm
+                        conditional_instr[i] = strh_imm;
+                    }
+                    else
+                    {
+                        //strh reg
+                    }
+                }
+            }
         }
+
         if ((i >> 4) == 0b101000)
             conditional_instr[i] = add_imm;
         if ((i >> 4) == 0b111010)
@@ -74,7 +160,7 @@ void ARM9::fill_lut()
 void ARM9::step()
 {
     uint32_t instr = mem.read32(pc);
-    uint32_t opcode = get_arm_opcode(instr);
+    uint32_t opcode = get_opcode(instr);
 
     //emulate cond field
     uint8_t cond = instr >> 28;

@@ -12,7 +12,7 @@ main.cpp
 memory.cpp memory.hpp
 arm9.cpp arm9.hpp
 arm9_instructions.cpp arm9_instructions.hpp
-math.hpp
+math.hpp math.cpp
 )
 
 target_link_libraries(KiDS imgui glfw OpenGL::GL ${CMAKE_DL_LIBS})

@@ -35,7 +35,7 @@ int main()
     ImGui_ImplOpenGL3_Init(glsl_version);
     
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
+  
     int pos = 0;
     ARM9 cpu;
     while (!glfwWindowShouldClose(window))
