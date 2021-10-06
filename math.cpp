@@ -14,3 +14,10 @@ bool get_bit(uint32_t num, uint8_t bit)
 {
     return (num >> bit) & 1;
 }
+
+void change_bit(uint32_t &value, bool bit_val, uint8_t bit_nr)
+{
+    int mask = 1 << bit_nr;
+    value = ((value & ~mask) | (bit_val << bit_nr));
+}
+

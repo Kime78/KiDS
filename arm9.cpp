@@ -43,6 +43,7 @@ void ARM9::fill_lut()
     for (int i = 0; i < 0x1000; i++)
     {
         conditional_instr[i] = undefined_instruction;
+
         if ((i >> 4) == 0b0001'0010)
             conditional_instr[i] = msr_cpsr_reg;
         if ((i >> 4) == 0b0001'0110)
@@ -54,11 +55,11 @@ void ARM9::fill_lut()
 
         if ((i >> 10) == 0b01)
         {
-            if(get_bit(i , 4)) // load bit
+            if (get_bit(i, 4)) // load bit
             {
-                if(get_bit(i, 6)) // byte/word bit
+                if (get_bit(i, 6)) // byte/word bit
                 {
-                    if(get_bit(i, 9))
+                    if (get_bit(i, 9))
                     {
                         conditional_instr[i] = ldrb_imm;
                     }
@@ -69,7 +70,7 @@ void ARM9::fill_lut()
                 }
                 else
                 {
-                    if(get_bit(i, 9))
+                    if (get_bit(i, 9))
                     {
                         conditional_instr[i] = ldr_imm;
                     }
@@ -81,9 +82,9 @@ void ARM9::fill_lut()
             }
             else
             {
-                if(get_bit(i, 6)) // byte/word bit
+                if (get_bit(i, 6)) // byte/word bit
                 {
-                    if(get_bit(i, 9))
+                    if (get_bit(i, 9))
                     {
                         conditional_instr[i] = strb_imm;
                     }
@@ -94,12 +95,12 @@ void ARM9::fill_lut()
                 }
                 else
                 {
-                    if(get_bit(i, 9))
+                    if (get_bit(i, 9))
                     {
                         conditional_instr[i] = str_imm;
                     }
                     else
-                    {   
+                    {
                         conditional_instr[i] = str_reg;
                     }
                 }
@@ -138,10 +139,29 @@ void ARM9::fill_lut()
             }
         }
 
+        if ((i >> 4) == 0b011101)
+            conditional_instr[i] = bics_reg;
         if ((i >> 4) == 0b101000)
             conditional_instr[i] = add_imm;
+        if ((i >> 4) == 0b001000)
+            conditional_instr[i] = add_reg;
+        if ((i >> 4) == 0b000100)
+            conditional_instr[i] = sub_reg;
+        if ((i >> 4) == 0b100101)
+            conditional_instr[i] = subs_reg;
         if ((i >> 4) == 0b111010)
             conditional_instr[i] = mov_imm;
+        if ((i >> 8) == 0b1011)
+            conditional_instr[i] = bl;
+        if ((i >> 8) == 0b1010)
+            conditional_instr[i] = b;
+        if (i == 0b0001'0010'0001)
+            conditional_instr[i] = bx;
+        if ((i >> 9) == 0b100) // store/load
+        {
+            if(get_bit(i, 4) == 0)
+                conditional_instr[i] = store_regs;
+        }
     }
 
     //fill unconditional opcodes
@@ -167,6 +187,12 @@ void ARM9::step()
     bool can_execute = 0;
     switch (cond)
     {
+    case 0x0:
+        can_execute = get_bit(cpsr, 30);
+        break;
+    case 0x1:
+        can_execute = ~get_bit(cpsr, 30);
+        break;
     case 0xE:
         can_execute = 1;
         break;
