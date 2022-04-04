@@ -10,3 +10,4 @@ imgui/libimgui.a
 .vscode
 roms
 debug.txt
+build

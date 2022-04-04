@@ -17,7 +17,6 @@ bool get_bit(uint32_t num, uint8_t bit)
 
 void change_bit(uint32_t &value, bool bit_val, uint8_t bit_nr)
 {
-    int mask = 1 << bit_nr;
-    value = ((value & ~mask) | (bit_val << bit_nr));
+    value = bit_val ? value | (1UL << bit_nr) : value & ~(1UL << bit_nr);
 }
 

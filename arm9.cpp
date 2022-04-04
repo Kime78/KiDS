@@ -27,7 +27,7 @@ Header get_header(Memory_ARM9 &mem)
 
 ARM9::ARM9()
 {
-    mem.read_rom("roms/armwrestler.nds");
+    mem.read_rom("/home/kime/Documents/Projects/KiDS/roms/armwrestler.nds");
     head = get_header(mem);
     pc = head.arm9_entry_address;
     for (int i = 0; i < head.arm9_size; i++)
@@ -61,22 +61,22 @@ void ARM9::fill_lut()
                 {
                     if (get_bit(i, 9))
                     {
-                        conditional_instr[i] = ldrb_imm;
+                        conditional_instr[i] = ldrb_reg;
                     }
                     else
                     {
-                        conditional_instr[i] = ldrb_reg;
+                        conditional_instr[i] = ldrb_imm;
                     }
                 }
                 else
                 {
                     if (get_bit(i, 9))
                     {
-                        conditional_instr[i] = ldr_imm;
+                        conditional_instr[i] = ldr_reg;
                     }
                     else
                     {
-                        conditional_instr[i] = ldr_reg;
+                        conditional_instr[i] = ldr_imm;
                     }
                 }
             }
@@ -86,22 +86,22 @@ void ARM9::fill_lut()
                 {
                     if (get_bit(i, 9))
                     {
-                        conditional_instr[i] = strb_imm;
+                        conditional_instr[i] = strb_reg;
                     }
                     else
                     {
-                        conditional_instr[i] = strb_reg;
+                        conditional_instr[i] = strb_imm;
                     }
                 }
                 else
                 {
                     if (get_bit(i, 9))
                     {
-                        conditional_instr[i] = str_imm;
+                        conditional_instr[i] = str_reg;
                     }
                     else
                     {
-                        conditional_instr[i] = str_reg;
+                        conditional_instr[i] = str_imm;
                     }
                 }
             }
@@ -139,6 +139,8 @@ void ARM9::fill_lut()
             }
         }
 
+        if ((i >> 4) == 0b100001)
+            conditional_instr[i] = ands_imm;
         if ((i >> 4) == 0b011101)
             conditional_instr[i] = bics_reg;
         if ((i >> 4) == 0b101000)
@@ -147,8 +149,10 @@ void ARM9::fill_lut()
             conditional_instr[i] = add_reg;
         if ((i >> 4) == 0b000100)
             conditional_instr[i] = sub_reg;
+        if ((i >> 4) == 0b000101)
+            conditional_instr[i] = subs_reg;    
         if ((i >> 4) == 0b100101)
-            conditional_instr[i] = subs_reg;
+            conditional_instr[i] = subs_imm;
         if ((i >> 4) == 0b111010)
             conditional_instr[i] = mov_imm;
         if ((i >> 8) == 0b1011)
@@ -161,6 +165,8 @@ void ARM9::fill_lut()
         {
             if(get_bit(i, 4) == 0)
                 conditional_instr[i] = store_regs;
+            else 
+                conditional_instr[i] = load_regs;
         }
     }
 
@@ -181,7 +187,8 @@ void ARM9::step()
 {
     uint32_t instr = mem.read32(pc);
     uint32_t opcode = get_opcode(instr);
-
+    if(pc == 0x02004054)
+        std::cout << "copium";
     //emulate cond field
     uint8_t cond = instr >> 28;
     bool can_execute = 0;
@@ -191,7 +198,7 @@ void ARM9::step()
         can_execute = get_bit(cpsr, 30);
         break;
     case 0x1:
-        can_execute = ~get_bit(cpsr, 30);
+        can_execute = get_bit(cpsr, 30) ^ 1;
         break;
     case 0xE:
         can_execute = 1;
