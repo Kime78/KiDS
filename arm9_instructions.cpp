@@ -582,6 +582,25 @@ void subs_imm(ARM9 *cpu, uint32_t opcode)
     std::cout << cpu->reg[15] <<  std::hex << " subs imm - reg[" << (int)dest << "] = reg[" << (int)op1 << "] - " << rightRotate(imm, shift_amount * 2, 32) << '\n';
 }
 
+void cmp_imm(ARM9 *cpu, uint32_t opcode)
+{
+    uint8_t dest = (opcode >> 12) & 0xF;
+    uint8_t op1 = (opcode >> 16) & 0xF;
+
+    uint8_t imm = opcode & 0xFF;
+    uint8_t shift_amount = (opcode >> 8) & 0xF;
+
+    uint32_t tst = cpu->reg[op1] - rightRotate(imm, shift_amount * 2, 32);
+
+    bool zero = tst ? 0 : 1;
+    bool sign = tst >> 31 ? 1 : 0;
+
+    change_bit(cpu->cpsr, zero, 30);
+    change_bit(cpu->cpsr, sign, 31);
+
+    std::cout << cpu->reg[15] <<  std::hex << " cmp imm - reg[" << (int)dest << "] = reg[" << (int)op1 << "] - " << rightRotate(imm, shift_amount * 2, 32) << '\n';
+}
+
 void subs_reg(ARM9 *cpu, uint32_t opcode)
 {
     uint8_t dest = (opcode >> 12) & 0xF;
