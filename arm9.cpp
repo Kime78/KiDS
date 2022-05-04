@@ -27,7 +27,7 @@ Header get_header(Memory_ARM9 &mem)
 
 ARM9::ARM9()
 {
-    mem.read_rom("/home/kime/Documents/Projects/KiDS/roms/armwrestler.nds");
+    mem.read_rom("/home/kime/Documents/projects/KiDS/roms/armwrestler.nds");
     head = get_header(mem);
     pc = head.arm9_entry_address;
     for (int i = 0; i < head.arm9_size; i++)
@@ -107,38 +107,6 @@ void ARM9::fill_lut()
             }
         }
 
-        if ((i >> 9) == 0b000) //data transfer
-        {
-            if ((i & 0b1111) == 0b1011)
-            {
-                if (get_bit(i, 4))
-                {
-                    //ldrh
-                    if (get_bit(i, 6))
-                    {
-                        //ldrh imm
-                    }
-                    else
-                    {
-                        //ldrh reg
-                    }
-                }
-                else
-                {
-                    //strh
-                    if (get_bit(i, 6))
-                    {
-                        //strh imm
-                        conditional_instr[i] = strh_imm;
-                    }
-                    else
-                    {
-                        //strh reg
-                    }
-                }
-            }
-        }
-
         if ((i >> 4) == 0b100001)
             conditional_instr[i] = ands_imm;
         if ((i >> 4) == 0b011101)
@@ -167,6 +135,38 @@ void ARM9::fill_lut()
                 conditional_instr[i] = store_regs;
             else 
                 conditional_instr[i] = load_regs;
+        }
+
+        if ((i >> 9) == 0b000) //data transfer
+        {
+            if ((i & 0b1111) == 0b1011)
+            {
+                if (get_bit(i, 4))
+                {
+                    //ldrh
+                    if (get_bit(i, 6))
+                    {
+                        conditional_instr[i] = ldrh_imm;
+                    }
+                    else
+                    {
+                        std::cout << "AAAAAAAAAa";
+                    }
+                }
+                else
+                {
+                    //strh
+                    if (get_bit(i, 6))
+                    {
+                        //strh imm
+                        conditional_instr[i] = strh_imm;
+                    }
+                    else
+                    {
+                        //strh reg
+                    }
+                }
+            }
         }
     }
 

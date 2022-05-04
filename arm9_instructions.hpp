@@ -10,6 +10,7 @@ extern void mov_imm(ARM9 *cpu, uint32_t opcode);
 extern void ands_imm(ARM9 *cpu, uint32_t opcode);
 extern void add_imm(ARM9 *cpu, uint32_t opcode);
 extern void strh_imm(ARM9 *cpu, uint32_t opcode);
+extern void ldrh_imm(ARM9 *cpu, uint32_t opcode);
 extern void msr_cpsr_reg(ARM9 *cpu, uint32_t opcode);
 extern void msr_cpsr_imm(ARM9 *cpu, uint32_t opcode);
 extern void msr_spsr_reg(ARM9 *cpu, uint32_t opcode);

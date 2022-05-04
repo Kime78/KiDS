@@ -84,6 +84,33 @@ void ands_imm(ARM9 *cpu, uint32_t opcode)
 
     std::cout << cpu->reg[15] <<  std::hex << " ands imm - reg[" << (int)dest << "] = reg[" << (int)op1 << "] & " << rightRotate(imm, shift_amount * 2, 32) << '\n';
 }
+void ldrh_imm(ARM9 *cpu, uint32_t opcode) {
+    uint8_t dest = (opcode >> 12) & 0xF;
+    uint8_t base = (opcode >> 16) & 0xF;
+    bool pre_post = get_bit(opcode, 24);
+    bool up_down = get_bit(opcode, 23);
+    uint8_t imm = opcode & 0xF;
+    bool write_back = 1;
+    if (pre_post)
+        write_back = get_bit(opcode, 21);
+
+    uint32_t address;
+    if (pre_post)
+        address = up_down ? cpu->reg[base] + imm : cpu->reg[base] - imm;
+    else
+        address = cpu->reg[base];
+
+    cpu->reg[dest] = cpu->mem.read16(address);
+
+    if (pre_post == 0)
+        address = up_down ? cpu->reg[base] + imm : cpu->reg[base] - imm;
+
+    if (write_back)
+        cpu->reg[base] = address;
+
+    std::cout << cpu->reg[15] <<  std::hex << " ldrh imm reg[" << dest << "] = [" << address << "](" << cpu->mem.read16(address) << ")\n";
+
+}
 
 void strh_imm(ARM9 *cpu, uint32_t opcode)
 {
