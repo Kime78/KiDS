@@ -357,6 +357,33 @@ void sub_reg(ARM9 *cpu, uint32_t opcode)
     std::cout << cpu->reg[15] <<  std::hex << " sub reg - reg[" << (int)dest << "] = reg[" << (int)op1 << "] - " << val << '\n';
 }
 
+void mov_reg(ARM9 *cpu, uint32_t opcode)
+{
+    uint8_t dest = (opcode >> 12) & 0xF;
+    uint8_t op1 = (opcode >> 16) & 0xF;
+    uint8_t op2 = opcode & 0xF;
+
+    uint32_t val;
+    bool shift_by_reg = get_bit(opcode, 4);
+    uint8_t shift_type = (opcode >> 5) & 0b11;
+    if (shift_by_reg)
+    {
+        uint8_t rs = cpu->reg[(opcode >> 8) & 0xF] & 0xF;
+        bool a;
+        val = shift(shift_type, cpu->reg[op2], rs, a);
+    }
+    else
+    {
+        uint8_t imm = (opcode >> 7) & 0b1'1111;
+        bool a;
+        val = shift(shift_type, cpu->reg[op2], imm, a);
+    }
+
+    cpu->reg[dest] = cpu->reg[op2];
+
+    std::cout << cpu->reg[15] <<  std::hex << " mov reg - reg[" << (int)dest << "] = reg[" << (int)op1 << "] - " << val << '\n';
+}
+
 void b(ARM9 *cpu, uint32_t opcode)
 {
     int32_t addr = opcode & 0xFFFFFF;

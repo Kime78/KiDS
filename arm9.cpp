@@ -121,6 +121,8 @@ void ARM9::fill_lut()
             conditional_instr[i] = subs_reg;    
         if ((i >> 4) == 0b100101)
             conditional_instr[i] = subs_imm;
+        if ((i >> 4) == 0b011010)
+            conditional_instr[i] = mov_reg;
         if ((i >> 4) == 0b111010)
             conditional_instr[i] = mov_imm;
         if ((i >> 8) == 0b1011)
