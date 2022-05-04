@@ -208,6 +208,8 @@ void ARM9::step()
     case 0x1:
         can_execute = get_bit(cpsr, 30) ^ 1;
         break;
+    case 0x5:
+        can_execute = get_bit(cpsr, 31);
     case 0xE:
         can_execute = 1;
         break;
