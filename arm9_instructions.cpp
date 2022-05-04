@@ -33,13 +33,13 @@ uint32_t shift(uint8_t shift_type, uint32_t value, uint8_t shift_amount, bool &c
 }
 void undefined_instruction(ARM9 *cpu, uint32_t opcode)
 {
-    //std::cout << cpu->reg[15] <<  "[ERROR] UNDEFINED INSTRUCTION " << std::hex << opcode << ": " << get_opcode(opcode) << std::endl;
+    std::cout << cpu->reg[15] <<  "[ERROR] UNDEFINED INSTRUCTION " << std::hex << opcode << ": " << get_opcode(opcode) << std::endl;
     exit(0);
 }
 
 void undefined_instruction_thumb(ARM9 *cpu, uint16_t opcode)
 {
-    //std::cout << cpu->reg[15] <<  "[ERROR] UNDEFINED INSTRUCTION " << std::hex << opcode << std::endl;
+    std::cout << cpu->reg[15] <<  "[ERROR] UNDEFINED INSTRUCTION " << std::hex << opcode << std::endl;
     exit(0);
 }
 
@@ -50,7 +50,7 @@ void mov_imm(ARM9 *cpu, uint32_t opcode)
     uint8_t shift_amount = (opcode >> 8) & 0xF;
     cpu->reg[dest] = rightRotate(imm, shift_amount * 2, 32);
 
-    //std::cout << cpu->reg[15] <<  std::hex << " mov imm - reg[" << (int)dest << "] = " << rightRotate(imm, shift_amount * 2, 32) << '\n';
+    std::cout << cpu->reg[15] <<  std::hex << " mov imm - reg[" << (int)dest << "] = " << rightRotate(imm, shift_amount * 2, 32) << '\n';
 }
 
 void add_imm(ARM9 *cpu, uint32_t opcode)
@@ -63,7 +63,7 @@ void add_imm(ARM9 *cpu, uint32_t opcode)
 
     cpu->reg[dest] = cpu->reg[op1] + rightRotate(imm, shift_amount * 2, 32);
 
-    //std::cout << cpu->reg[15] <<  std::hex << " add imm - reg[" << (int)dest << "] = reg[" << (int)op1 << "] + " << rightRotate(imm, shift_amount * 2, 32) << '\n';
+    std::cout << cpu->reg[15] <<  std::hex << " add imm - reg[" << (int)dest << "] = reg[" << (int)op1 << "] + " << rightRotate(imm, shift_amount * 2, 32) << '\n';
 }
 
 void ands_imm(ARM9 *cpu, uint32_t opcode)
@@ -82,7 +82,7 @@ void ands_imm(ARM9 *cpu, uint32_t opcode)
     change_bit(cpu->cpsr, zero, 30);
     change_bit(cpu->cpsr, sign, 31);
 
-    //std::cout << cpu->reg[15] <<  std::hex << " ands imm - reg[" << (int)dest << "] = reg[" << (int)op1 << "] & " << rightRotate(imm, shift_amount * 2, 32) << '\n';
+    std::cout << cpu->reg[15] <<  std::hex << " ands imm - reg[" << (int)dest << "] = reg[" << (int)op1 << "] & " << rightRotate(imm, shift_amount * 2, 32) <<  "(" << cpu->reg[dest] << ")" << '\n';
 }
 void ldrh_imm(ARM9 *cpu, uint32_t opcode) {
     uint8_t dest = (opcode >> 12) & 0xF;
@@ -108,7 +108,7 @@ void ldrh_imm(ARM9 *cpu, uint32_t opcode) {
     if (write_back)
         cpu->reg[base] = address;
 
-    //std::cout << cpu->reg[15] <<  std::hex << " ldrh imm reg[" << dest << "] = [" << address << "](" << cpu->mem.read16(address) << ")\n";
+    std::cout << cpu->reg[15] <<  std::hex << " ldrh imm reg[" << int(dest) << "] = [" << address << "](" << cpu->mem.read16(address) << ")\n";
 
 }
 
@@ -137,7 +137,7 @@ void strh_imm(ARM9 *cpu, uint32_t opcode)
     if (write_back)
         cpu->reg[base] = address;
 
-    //std::cout << cpu->reg[15] <<  std::hex << " strh imm reg[" << dest << "] = [" << address << "](" << cpu->mem.read16(address) << ")\n";
+    std::cout << cpu->reg[15] <<  std::hex << " strh imm reg[" << dest << "] = [" << address << "](" << cpu->mem.read16(address) << ")\n";
 }
 
 void msr_cpsr_reg(ARM9 *cpu, uint32_t opcode)
@@ -157,24 +157,24 @@ void msr_cpsr_reg(ARM9 *cpu, uint32_t opcode)
     if (control)
         cpu->cpsr = cpu->cpsr & ((0xFFFFFF << 8) | cpu->reg[source] & 0xFF);
 
-    //std::cout << cpu->reg[15] <<  " msr cpsr reg[" << (int)source << "]\n";
+    std::cout << cpu->reg[15] <<  " msr cpsr reg[" << (int)source << "]\n";
 }
 
 void msr_cpsr_imm(ARM9 *cpu, uint32_t opcode)
 {
-    //std::cout << cpu->reg[15] <<  " msr cpsr imm not implemented";
+    std::cout << cpu->reg[15] <<  " msr cpsr imm not implemented";
     exit(0);
 }
 
 void msr_spsr_reg(ARM9 *cpu, uint32_t opcode)
 {
-    //std::cout << cpu->reg[15] <<  " msr spsr reg not implemented";
+    std::cout << cpu->reg[15] <<  " msr spsr reg not implemented";
     exit(0);
 }
 
 void msr_spsr_imm(ARM9 *cpu, uint32_t opcode)
 {
-    //std::cout << cpu->reg[15] <<  " msr spsr imm not implemented";
+    std::cout << cpu->reg[15] <<  " msr spsr imm not implemented";
     exit(0);
 }
 
@@ -208,11 +208,11 @@ void strb_imm(ARM9 *cpu, uint32_t opcode)
     if (write_back)
         cpu->reg[base] = address;
 
-    //std::cout << cpu->reg[15] <<  std::hex << " str imm [" << address << "] = reg[" << (int)dest << "]\n"; 
+    std::cout << cpu->reg[15] <<  std::hex << " str imm [" << address << "] = reg[" << (int)dest << "]\n"; 
 }
 void strb_reg(ARM9 *cpu, uint32_t opcode)
 {
-    //std::cout << cpu->reg[15] <<  " strb reg not implemented";
+    std::cout << cpu->reg[15] <<  " strb reg not implemented";
     exit(0);
 }
 void str_imm(ARM9 *cpu, uint32_t opcode)
@@ -245,21 +245,21 @@ void str_imm(ARM9 *cpu, uint32_t opcode)
     if (write_back)
         cpu->reg[base] = address;
 
-    //std::cout << cpu->reg[15] <<  std::hex << " str imm [" << address << "] = reg[" << (int)dest << "]\n";
+    std::cout << cpu->reg[15] <<  std::hex << " str imm [" << address << "] = reg[" << (int)dest << "]\n";
 }
 void str_reg(ARM9 *cpu, uint32_t opcode)
 {
-    //std::cout << cpu->reg[15] <<  " str reg not implemented";
+    std::cout << cpu->reg[15] <<  " str reg not implemented";
     exit(0);
 }
 void ldrb_imm(ARM9 *cpu, uint32_t opcode)
 {
-    //std::cout << cpu->reg[15] <<  " ldrb imm not implemented";
+    std::cout << cpu->reg[15] <<  " ldrb imm not implemented";
     exit(0);
 }
 void ldrb_reg(ARM9 *cpu, uint32_t opcode)
 {
-    //std::cout << cpu->reg[15] <<  " ldrb reg not implemented";
+    std::cout << cpu->reg[15] <<  " ldrb reg not implemented";
     exit(0);
 }
 void ldr_imm(ARM9 *cpu, uint32_t opcode)
@@ -292,7 +292,7 @@ void ldr_imm(ARM9 *cpu, uint32_t opcode)
     if (write_back)
         cpu->reg[base] = address;
 
-    //std::cout << cpu->reg[15] <<  std::hex << " ldr imm [" << address << "] = reg[" << (int)dest << "]\n";
+    std::cout << cpu->reg[15] <<  std::hex << " ldr imm [" << address << "] = reg[" << (int)dest << "]\n";
 }
 void ldr_reg(ARM9 *cpu, uint32_t opcode)
 {
@@ -327,7 +327,7 @@ void ldr_reg(ARM9 *cpu, uint32_t opcode)
     if (write_back)
         cpu->reg[base] = address;
 
-    //std::cout << cpu->reg[15] <<  std::hex << " ldr reg [" << address << "] = reg[" << (int)dest << "]\n";
+    std::cout << cpu->reg[15] <<  std::hex << " ldr reg [" << address << "] = reg[" << (int)dest << "]\n";
 }
 
 void sub_reg(ARM9 *cpu, uint32_t opcode)
@@ -354,7 +354,7 @@ void sub_reg(ARM9 *cpu, uint32_t opcode)
 
     cpu->reg[dest] = cpu->reg[op1] - val;
 
-    //std::cout << cpu->reg[15] <<  std::hex << " sub reg - reg[" << (int)dest << "] = reg[" << (int)op1 << "] - " << val << '\n';
+    std::cout << cpu->reg[15] <<  std::hex << " sub reg - reg[" << (int)dest << "] = reg[" << (int)op1 << "] - " << val << '\n';
 }
 
 void b(ARM9 *cpu, uint32_t opcode)
@@ -365,7 +365,7 @@ void b(ARM9 *cpu, uint32_t opcode)
     if(get_bit(addr, 23))
         addr |= 0xFF000000;
     cpu->reg[15] += addr + 4;
-    //std::cout << cpu->reg[15] <<  std::hex << " b " << addr << '\n';
+    std::cout << cpu->reg[15] <<  std::hex << " b " << addr << '\n';
 }
 void bl(ARM9 *cpu, uint32_t opcode)
 {
@@ -375,7 +375,7 @@ void bl(ARM9 *cpu, uint32_t opcode)
     if(get_bit(addr, 23))
         addr |= 0xFF000000;
     cpu->reg[15] += addr + 4;
-    //std::cout << cpu->reg[15] <<  std::hex << " bl " << addr << '\n';
+    std::cout << cpu->reg[15] <<  std::hex << " bl " << addr << '\n';
 }
 
 void add_reg(ARM9 *cpu, uint32_t opcode)
@@ -402,7 +402,7 @@ void add_reg(ARM9 *cpu, uint32_t opcode)
 
     cpu->reg[dest] = cpu->reg[op1] + val;
 
-    //std::cout << cpu->reg[15] <<  std::hex << " add reg - reg[" << (int)dest << "] = reg[" << (int)op1 << "] + " << val << '\n';
+    std::cout << cpu->reg[15] <<  std::hex << " add reg - reg[" << (int)dest << "] = reg[" << (int)op1 << "] + " << val << '\n';
 }
 
 void bics_reg(ARM9 *cpu, uint32_t opcode)
@@ -435,7 +435,7 @@ void bics_reg(ARM9 *cpu, uint32_t opcode)
     change_bit(cpu->cpsr, carry, 29);
     cpu->reg[dest] = cpu->reg[op1] & ~val;
 
-    //std::cout << cpu->reg[15] <<  std::hex << " bics reg - reg[" << (int)dest << "] = reg[" << (int)op1 << "] &~ " << val << '\n';
+    std::cout << cpu->reg[15] <<  std::hex << " bics reg - reg[" << (int)dest << "] = reg[" << (int)op1 << "] &~ " << val << '\n';
 }
 
 void bx(ARM9 *cpu, uint32_t opcode)
@@ -445,11 +445,11 @@ void bx(ARM9 *cpu, uint32_t opcode)
     {
         //switch to THUMB
         change_bit(cpu->cpsr, 1, 5);
-        //std::cout << cpu->reg[15] <<  "THUMB NOT IMPLEMENTED\n";
+        std::cout << cpu->reg[15] <<  "THUMB NOT IMPLEMENTED\n";
         exit(0);
     }
     cpu->reg[15] = addr & 0xFFFFFFFE;
-    //std::cout << "bx " << std::hex << addr << '\n';
+    std::cout << "bx " << std::hex << addr << '\n';
 }
 
 void store_regs(ARM9 *cpu, uint32_t opcode)
@@ -491,8 +491,8 @@ void store_regs(ARM9 *cpu, uint32_t opcode)
             
         }
     }
-    //std::cout << cpu->reg[15] <<  " stm " << std::hex << addr << " " << reg_list;
-    //std::cout << '\n';
+    std::cout << cpu->reg[15] <<  " stm " << std::hex << addr << " " << reg_list;
+    std::cout << '\n';
 }
 
 void load_regs(ARM9 *cpu, uint32_t opcode)
@@ -532,8 +532,8 @@ void load_regs(ARM9 *cpu, uint32_t opcode)
             }            
         }
     }
-    //std::cout << cpu->reg[15] <<  " ldm " << std::hex << addr << " " << reg_list;
-    //std::cout << '\n';
+    std::cout << cpu->reg[15] <<  " ldm " << std::hex << addr << " " << reg_list;
+    std::cout << '\n';
 }
 
 void subs_imm(ARM9 *cpu, uint32_t opcode)
@@ -552,7 +552,7 @@ void subs_imm(ARM9 *cpu, uint32_t opcode)
     change_bit(cpu->cpsr, zero, 30);
     change_bit(cpu->cpsr, sign, 31);
 
-    //std::cout << cpu->reg[15] <<  std::hex << " subs imm - reg[" << (int)dest << "] = reg[" << (int)op1 << "] - " << rightRotate(imm, shift_amount * 2, 32) << '\n';
+    std::cout << cpu->reg[15] <<  std::hex << " subs imm - reg[" << (int)dest << "] = reg[" << (int)op1 << "] - " << rightRotate(imm, shift_amount * 2, 32) << '\n';
 }
 
 void subs_reg(ARM9 *cpu, uint32_t opcode)
@@ -585,5 +585,5 @@ void subs_reg(ARM9 *cpu, uint32_t opcode)
     change_bit(cpu->cpsr, zero, 30);
     change_bit(cpu->cpsr, sign, 31);
 
-    //std::cout << cpu->reg[15] <<  std::hex << " subs reg - reg[" << (int)dest << "] = reg[" << (int)op1 << "] - " << val << '\n';
+    std::cout << cpu->reg[15] <<  std::hex << " subs reg - reg[" << (int)dest << "] = reg[" << (int)op1 << "] - " << val << '\n';
 }

@@ -218,7 +218,17 @@ uint16_t Memory_ARM9::read16(uint32_t address)
     }
     if (address >= 0x04000000 && address < 0x05000000) //io stuff
     {
-        std::cout << "[WARNING] UNIMPLEMENTED IO 16 BIT READ AT " << std::hex << address << '\n';
+        switch (address) {
+            case 0x4000004: {
+                std::cout << "[LOG] READ DISPSTAT WITH VALUE: " << status_regs.DISPSTAT << std::endl;
+                return status_regs.DISPSTAT;
+                break;
+            }
+            default: {
+                std::cout << "[WARNING] UNIMPLEMENTED IO 16 BIT READ AT " << std::hex << address << '\n';
+                break;
+            }
+        }
     }
     if (address >= 0x05000000 && address < 0x06000000)
     {
@@ -285,7 +295,7 @@ void Memory_ARM9::write32(uint32_t address, uint32_t value)
     }
     if (address >= 0x04000000 && address < 0x05000000) //io stuff
     {
-        std::cout << "[WARNING] UNIMPLEMENTED IO32 BIT WRITE AT " << std::hex << address << " WITH THE VALUE " << value << '\n';
+        std::cout << "[WARNING] UNIMPLEMENTED IO 32 BIT WRITE AT " << std::hex << address << " WITH THE VALUE " << value << '\n';
     }
     if (address >= 0x05000000 && address < 0x06000000)
     {

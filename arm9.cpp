@@ -150,7 +150,7 @@ void ARM9::fill_lut()
                     }
                     else
                     {
-                        std::cout << "AAAAAAAAAa";
+                        std::cout << "AAAAAAAAAa"; //ldrh_reg
                     }
                 }
                 else
@@ -187,10 +187,14 @@ void ARM9::step()
 {
     uint32_t instr = mem.read32(pc);
     uint32_t opcode = get_opcode(instr);
-    if(pc == 0x02004054)
-        std::cout << "copium";
+    //faking vblank
+    uint32_t x = mem.status_regs.DISPSTAT;
+    change_bit(x, get_bit(mem.status_regs.DISPSTAT, 0) ^ 1, 0);
+    mem.status_regs.DISPSTAT = x;
+    
     //emulate cond field
     uint8_t cond = instr >> 28;
+    
     bool can_execute = 0;
     switch (cond)
     {
@@ -208,7 +212,8 @@ void ARM9::step()
         std::cout << "[ERROR] COND " << std::hex << (int)cond << "NOT IMPLEMENTED!";
         exit(0);
     }
-
+    if(pc >= 0x2004350)
+            std::cout << std::hex << std::endl << int(cond) << std::endl << can_execute << std::endl;
     if (can_execute)
     {
         conditional_instr[opcode](this, instr);

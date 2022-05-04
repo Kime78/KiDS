@@ -6,6 +6,11 @@
 class Memory_ARM9
 {
 public:
+    struct StatusRegisters {
+        //put more regs..
+        uint16_t DISPSTAT;
+    }status_regs;
+    
     std::unique_ptr<uint8_t[]> instruction_tcm;
     std::unique_ptr<uint8_t[]> data_tcm;
     std::unique_ptr<uint8_t[]> main_memory;
