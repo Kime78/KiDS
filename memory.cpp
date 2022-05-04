@@ -36,7 +36,7 @@ void Memory_ARM9::write8(uint32_t address, uint8_t value)
     }
     if (address >= 0x04000000 && address < 0x05000000) //io stuff
     {
-        std::cout << "[WARNING] UNIMPLEMENTED IO WRITE AT " << std::hex << address << " WITH THE VALUE " << value << '\n';
+        std::cout << "[WARNING] UNIMPLEMENTED IO 8 BIT WRITE AT " << std::hex << address << " WITH THE VALUE " << value << '\n';
     }
     if (address >= 0x05000000 && address < 0x06000000)
     {
@@ -64,7 +64,7 @@ void Memory_ARM9::write8(uint32_t address, uint8_t value)
     }
     if (address >= 0x07000000 && address < 0x08000000)
     {
-        std::cout << "[WARNING] WRITE TO GBA ROM\n";
+        std::cout << "[WARNING] 8 BIT WRITE TO GBA ROM\n";
         gba_rom[address - 0x07000000] = value;
     }
     if (address >= 0x08000000 && address < 0x0A000000)
@@ -93,7 +93,7 @@ uint8_t Memory_ARM9::read8(uint32_t address)
     }
     if (address >= 0x04000000 && address < 0x05000000) //io stuff
     {
-        std::cout << "[WARNING] UNIMPLEMENTED IO READ AT " << std::hex << address << '\n';
+        std::cout << "[WARNING] UNIMPLEMENTED 8 BIT IO READ AT " << std::hex << address << '\n';
     }
     if (address >= 0x05000000 && address < 0x06000000)
     {
@@ -152,7 +152,7 @@ void Memory_ARM9::write16(uint32_t address, uint16_t value)
     }
     if (address >= 0x04000000 && address < 0x05000000) //io stuff
     {
-        std::cout << "[WARNING] UNIMPLEMENTED IO WRITE AT " << std::hex << address << " WITH THE VALUE " << value << '\n';
+        std::cout << "[WARNING] UNIMPLEMENTED 16 BIT IO WRITE AT " << std::hex << address << " WITH THE VALUE " << value << '\n';
     }
     if (address >= 0x05000000 && address < 0x06000000)
     {
@@ -218,7 +218,7 @@ uint16_t Memory_ARM9::read16(uint32_t address)
     }
     if (address >= 0x04000000 && address < 0x05000000) //io stuff
     {
-        std::cout << "[WARNING] UNIMPLEMENTED IO READ AT " << std::hex << address << '\n';
+        std::cout << "[WARNING] UNIMPLEMENTED IO 16 BIT READ AT " << std::hex << address << '\n';
     }
     if (address >= 0x05000000 && address < 0x06000000)
     {
@@ -285,7 +285,7 @@ void Memory_ARM9::write32(uint32_t address, uint32_t value)
     }
     if (address >= 0x04000000 && address < 0x05000000) //io stuff
     {
-        std::cout << "[WARNING] UNIMPLEMENTED IO WRITE AT " << std::hex << address << " WITH THE VALUE " << value << '\n';
+        std::cout << "[WARNING] UNIMPLEMENTED IO32 BIT WRITE AT " << std::hex << address << " WITH THE VALUE " << value << '\n';
     }
     if (address >= 0x05000000 && address < 0x06000000)
     {
@@ -371,7 +371,7 @@ uint32_t Memory_ARM9::read32(uint32_t address)
     }
     if (address >= 0x04000000 && address < 0x05000000) //io stuff
     {
-        std::cout << "[WARNING] UNIMPLEMENTED IO READ AT " << std::hex << address << '\n';
+        std::cout << "[WARNING] UNIMPLEMENTED IO 32 BIT READ AT " << std::hex << address << '\n';
     }
     if (address >= 0x05000000 && address < 0x06000000)
     {
